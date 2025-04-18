@@ -53,4 +53,4 @@ npm run compile && code --extension-development-path=.
 - 协议号范围：2000-9999
 
 ## 许可证
-[本项目使用 MIT 许可证](https://github.com/your-username/sproto-formatter/blob/main/LICENSE)
+[本项目使用 MIT 许可证](https://github.com/rendercoders/sproto-formatter/blob/main/LICENSE)

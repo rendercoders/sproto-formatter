@@ -176,24 +176,24 @@ export class SprotoValidator {
      * @param diagnostics 诊断信息数组
      */
     private checkFieldDefinitionErrors(line: string, lineNumber: number, diagnostics: vscode.Diagnostic[]) {
-        // 跳过空行或结束花括号
-        if (line.trim() === '' || line.trim() === '}') {
+        // 跳过空行、结束花括号或空块
+        if (line.trim() === '' || line.trim() === '}' || line.trim() === 'response {' || line.trim() === 'request {') {
             return;
         }
-    
-        // 如果不是以字母开头的行（可能是注释），则跳过
-        if (!line.match(/^\s*\w/)) {
+
+        // 跳过注释行（以#开头）
+        if (line.trim().startsWith('#')) {
             return;
         }
-    
+
         // 标准字段格式：字段名 数字: 类型
         const standardFormat = /^\s*\w+\s+\d+\s*:\s*(\*?\s*\w+|$$.*?$$)/;
-        
+
         // 情况1：完全匹配标准格式
         if (standardFormat.test(line)) {
             return; // 格式正确，无需处理
         }
-    
+
         // 情况2：有冒号但没有类型（如 "msg 2:"）
         if (line.includes(':') && !line.match(/:\s*\w/)) {
             const colonIndex = line.indexOf(':');
@@ -210,7 +210,7 @@ export class SprotoValidator {
             );
             return;
         }
-    
+
         // 情况3：有编号但没有冒号（如 "msg3 2"）
         if (line.match(/^\s*\w+\s+\d+\s*$/) || line.match(/^\s*\w+\s+\d+\s+\w/)) {
             const match = line.match(/^\s*\w+\s+\d+/);
@@ -229,7 +229,7 @@ export class SprotoValidator {
             }
             return;
         }
-    
+
         // 情况4：只有字段名（如 "msg"）
         if (line.match(/^\s*\w+\s*$/)) {
             const match = line.match(/^\s*\w+/);
@@ -248,7 +248,7 @@ export class SprotoValidator {
             }
             return;
         }
-    
+
         // 情况5：其他不符合格式的情况
         const range = new vscode.Range(
             new vscode.Position(lineNumber, 0),

@@ -1,21 +1,65 @@
 {
-    "name": "Sproto Dark",
-    "colors": {},
-    "tokenColors": [
-      {
-        "name": "Types",
-        "scope": "storage.type.sproto",
-        "settings": { "foreground": "#4EC9B0" }
-      },
-      {
-        "name": "Protocol Names",
-        "scope": "entity.name.type.sproto",
-        "settings": { "foreground": "#DCDCAA" }
-      },
-      {
-        "name": "Field IDs",
-        "scope": "constant.numeric.field-id.sproto",
-        "settings": { "foreground": "#B5CEA8" }
+  "name": "Sproto Dark",
+  "colors": {},
+  "tokenColors": [
+    {
+      "name": "Types",
+      "scope": "storage.type.sproto",
+      "settings": {
+        "foreground": "#4EC9B0"
       }
-    ]
-  }
+    },
+    {
+      "name": "Protocol Names",
+      "scope": "entity.name.type.sproto",
+      "settings": {
+        "foreground": "#DCDCAA"
+      }
+    },
+    {
+      "name": "Field IDs",
+      "scope": "constant.numeric.field-id.sproto",
+      "settings": {
+        "foreground": "#B5CEA8"
+      }
+    },
+    {
+      "name": "Error",
+      "scope": "keyword.control.error.sproto",
+      "settings": {
+        "foreground": "#FF6E67",
+        "fontStyle": "italic underline"
+      }
+    },
+    {
+      "name": "Request",
+      "scope": "keyword.control.request.sproto",
+      "settings": {
+        "foreground": "#569CD6",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Response",
+      "scope": "keyword.control.response.sproto",
+      "settings": {
+        "foreground": "#CE9178",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Comments",
+      "scope": "comment.line.number-sign.sproto, comment.block.sproto",
+      "settings": {
+        "foreground": "#6A9955"
+      }
+    },
+    {
+      "name": "Comment Decorators",
+      "scope": "punctuation.definition.comment.sproto",
+      "settings": {
+        "foreground": "#808080"
+      }
+    }
+  ]
+}

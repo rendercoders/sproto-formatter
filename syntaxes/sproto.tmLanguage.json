@@ -1,7 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "scopeName": "source.sproto",
-  "fileTypes": [".sproto"],
+  "fileTypes": [
+    ".sproto"
+  ],
   "name": "Sproto",
   "patterns": [
     {
@@ -10,7 +12,7 @@
     },
     {
       "name": "keyword.control.sproto",
-      "match": "(?i:\\b(request|response|struct|enum|service|protocol)\\b)"
+      "match": "(?i:\\b(struct|enum|service|protocol)\\b)"
     },
     {
       "name": "constant.numeric.integer.sproto",
@@ -42,6 +44,33 @@
           "match": "\\\\."
         }
       ]
+    },
+    {
+      "name": "keyword.control.error.sproto",
+      "match": "(?i:\\bError\\b)",
+      "captures": {
+        "0": {
+          "name": "keyword.control.error.sproto"
+        }
+      }
+    },
+    {
+      "name": "keyword.control.request.sproto",
+      "match": "(?i:\\brequest\\b)",
+      "captures": {
+        "0": {
+          "name": "keyword.control.request.sproto"
+        }
+      }
+    },
+    {
+      "name": "keyword.control.response.sproto",
+      "match": "(?i:\\bresponse\\b)",
+      "captures": {
+        "0": {
+          "name": "keyword.control.response.sproto"
+        }
+      }
     }
   ],
   "repository": {
@@ -51,9 +80,15 @@
           "name": "meta.field.sproto",
           "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(\\d+)\\s*:\\s*([A-Za-z][A-Za-z0-9_]*(?:<[^>]+>)?|\\*?[A-Z][A-Za-z0-9_]*)",
           "captures": {
-            "1": { "name": "variable.parameter.field.sproto" },
-            "2": { "name": "constant.numeric.field-id.sproto" },
-            "3": { "name": "storage.type.sproto" }
+            "1": {
+              "name": "variable.parameter.field.sproto"
+            },
+            "2": {
+              "name": "constant.numeric.field-id.sproto"
+            },
+            "3": {
+              "name": "storage.type.sproto"
+            }
           }
         }
       ]

@@ -1,0 +1,21 @@
+{
+    "name": "Sproto Dark",
+    "colors": {},
+    "tokenColors": [
+      {
+        "name": "Types",
+        "scope": "storage.type.sproto",
+        "settings": { "foreground": "#4EC9B0" }
+      },
+      {
+        "name": "Protocol Names",
+        "scope": "entity.name.type.sproto",
+        "settings": { "foreground": "#DCDCAA" }
+      },
+      {
+        "name": "Field IDs",
+        "scope": "constant.numeric.field-id.sproto",
+        "settings": { "foreground": "#B5CEA8" }
+      }
+    ]
+  }

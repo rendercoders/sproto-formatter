@@ -1,55 +1,75 @@
 {
   "name": "sproto-formatter",
-  "displayName": "Format Sproto",
-  "description": "causes",
-  "version": "0.0.1",
+  "displayName": "Sproto Formatter",
+  "description": "Formatter and validator for .sproto protocol files",
+  "version": "1.0.0",
+  "publisher": "your-name",
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.75.0"
   },
   "categories": [
-    "Other"
+    "Formatters"
   ],
+  "activationEvents": [],
   "repository": {
     "type": "git",
     "url": "https://github.com/rendercoders/sproto-formatter.git"
   },
-  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "languages": [{
-      "id": "sproto",
-      "extensions": [".sproto"],
-      "aliases": ["Sproto Protocol"]
-    }],
-    "grammars": [{
-      "language": "sproto",
-      "scopeName": "source.sproto",
-      "path": "./syntaxes/sproto.tmLanguage.json"
-    }],
-    "commands": [
+    "languages": [
       {
-        "command": "format-sproto.helloWorld",
-        "title": "Hello World"
+        "id": "sproto",
+        "extensions": [
+          ".sproto"
+        ],
+        "aliases": [
+          "Sproto",
+          "sproto"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "Sproto Formatter",
+      "properties": {
+        "sprotoFormatter.highlightColor": {
+          "type": "string",
+          "default": "rgba(100,250,100,0.2)",
+          "description": "Custom highlight color for protocols"
+        }
+      }
+    },
+    "themes": [
+      {
+        "label": "Sproto Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sproto-dark-theme.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sproto",
+        "scopeName": "source.sproto",
+        "path": "./syntaxes/sproto.tmLanguage.json"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
+    "vscode:prepublish": "npm run compile && cp -r ./syntaxes out/syntaxes",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.99.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.28.0",
-    "@typescript-eslint/parser": "^8.28.0",
-    "eslint": "^9.23.0",
-    "typescript": "^5.8.2",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@types/node": "16.x",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.33.0",
+    "typescript": "^4.9.4"
   }
 }

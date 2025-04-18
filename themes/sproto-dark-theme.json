@@ -27,8 +27,7 @@
       "name": "Error",
       "scope": "keyword.control.error.sproto",
       "settings": {
-        "foreground": "#FF6E67",
-        "fontStyle": "italic underline"
+        "foreground": "#FF6E67"
       }
     },
     {

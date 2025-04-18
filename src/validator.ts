@@ -176,88 +176,112 @@ export class SprotoValidator {
      * @param diagnostics 诊断信息数组
      */
     private checkFieldDefinitionErrors(line: string, lineNumber: number, diagnostics: vscode.Diagnostic[]) {
-        // 跳过空行、结束花括号或空块
-        if (line.trim() === '' || line.trim() === '}' || line.trim() === 'response {' || line.trim() === 'request {') {
-            return;
-        }
+        const trimmedLine = line.trim();
 
-        // 跳过注释行（以#开头）
-        if (line.trim().startsWith('#')) {
+        // 跳过不需要检查的行
+        if (this.shouldSkipLine(trimmedLine)) {
             return;
         }
 
         // 标准字段格式：字段名 数字: 类型
         const standardFormat = /^\s*\w+\s+\d+\s*:\s*(\*?\s*\w+|$$.*?$$)/;
 
-        // 情况1：完全匹配标准格式
+        // 如果匹配标准格式，直接返回
         if (standardFormat.test(line)) {
-            return; // 格式正确，无需处理
+            return;
         }
 
-        // 情况2：有冒号但没有类型（如 "msg 2:"）
-        if (line.includes(':') && !line.match(/:\s*\w/)) {
-            const colonIndex = line.indexOf(':');
-            const range = new vscode.Range(
-                new vscode.Position(lineNumber, colonIndex),
-                new vscode.Position(lineNumber, line.length)
-            );
-            diagnostics.push(
-                new vscode.Diagnostic(
-                    range,
-                    "字段定义缺少类型。正确格式应为：'字段名 编号: 类型'",
-                    vscode.DiagnosticSeverity.Error
-                )
+        // 检查各种错误情况
+        this.checkFieldErrors(line, lineNumber, diagnostics);
+    }
+
+    private shouldSkipLine(trimmedLine: string): boolean {
+        // 跳过空行、结束花括号、块开始标记或注释
+        if (trimmedLine === '' || trimmedLine === '}' || trimmedLine.startsWith('#') || trimmedLine === '{') {
+            return true;
+        }
+
+        // 检查是否是 request/response 块开始或空块
+        if (trimmedLine === 'request' || trimmedLine === 'response' ||
+            trimmedLine === 'request{}' || trimmedLine === 'response{}' ||
+            trimmedLine === 'request {' || trimmedLine === 'response {' ||
+            trimmedLine === 'request {}' || trimmedLine === 'response {}') {
+            return true;
+        }
+
+        // 更通用的块开始检查（带空格的各种变体）
+        const blockStartRegex = /^\s*(request|response)\s*\{?\}?\s*$/;
+        if (blockStartRegex.test(trimmedLine)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private checkFieldErrors(line: string, lineNumber: number, diagnostics: vscode.Diagnostic[]) {
+        const trimmedLine = line.trim();
+        const colonIndex = line.indexOf(':');
+        const hasColon = colonIndex !== -1;
+        const hasNumber = /\d+/.test(trimmedLine);
+
+        // 情况1：有冒号但没有类型
+        if (hasColon && !line.match(/:\s*\w/)) {
+            this.addDiagnostic(
+                lineNumber, colonIndex, line.length,
+                "字段定义缺少类型。正确格式应为：'字段名 编号: 类型'",
+                diagnostics
             );
             return;
         }
 
-        // 情况3：有编号但没有冒号（如 "msg3 2"）
-        if (line.match(/^\s*\w+\s+\d+\s*$/) || line.match(/^\s*\w+\s+\d+\s+\w/)) {
+        // 情况2：有编号但没有冒号
+        if (hasNumber && !hasColon && line.match(/^\s*\w+\s+\d+/)) {
             const match = line.match(/^\s*\w+\s+\d+/);
             if (match) {
-                const range = new vscode.Range(
-                    new vscode.Position(lineNumber, match.index! + match[0].length),
-                    new vscode.Position(lineNumber, line.length)
-                );
-                diagnostics.push(
-                    new vscode.Diagnostic(
-                        range,
-                        "字段定义缺少冒号。正确格式应为：'字段名 编号: 类型'",
-                        vscode.DiagnosticSeverity.Error
-                    )
+                this.addDiagnostic(
+                    lineNumber, match.index! + match[0].length, line.length,
+                    "字段定义缺少冒号。正确格式应为：'字段名 编号: 类型'",
+                    diagnostics
                 );
             }
             return;
         }
 
-        // 情况4：只有字段名（如 "msg"）
-        if (line.match(/^\s*\w+\s*$/)) {
+        // 情况3：只有字段名
+        if (!hasNumber && line.match(/^\s*\w+\s*$/)) {
             const match = line.match(/^\s*\w+/);
             if (match) {
-                const range = new vscode.Range(
-                    new vscode.Position(lineNumber, match.index! + match[0].length),
-                    new vscode.Position(lineNumber, line.length)
-                );
-                diagnostics.push(
-                    new vscode.Diagnostic(
-                        range,
-                        "字段定义缺少编号和类型。正确格式应为：'字段名 编号: 类型'",
-                        vscode.DiagnosticSeverity.Error
-                    )
+                this.addDiagnostic(
+                    lineNumber, match.index! + match[0].length, line.length,
+                    "字段定义缺少编号和类型。正确格式应为：'字段名 编号: 类型'",
+                    diagnostics
                 );
             }
             return;
         }
 
-        // 情况5：其他不符合格式的情况
-        const range = new vscode.Range(
-            new vscode.Position(lineNumber, 0),
-            new vscode.Position(lineNumber, line.length)
+        // 其他不符合格式的情况
+        this.addDiagnostic(
+            lineNumber, 0, line.length,
+            "字段定义格式不正确。正确格式应为：'字段名 编号: 类型'",
+            diagnostics
         );
+    }
+
+    private addDiagnostic(
+        lineNumber: number,
+        start: number,
+        end: number,
+        message: string,
+        diagnostics: vscode.Diagnostic[]
+    ) {
         diagnostics.push(
             new vscode.Diagnostic(
-                range,
-                "字段定义格式不正确。正确格式应为：'字段名 编号: 类型'",
+                new vscode.Range(
+                    new vscode.Position(lineNumber, start),
+                    new vscode.Position(lineNumber, end)
+                ),
+                message,
                 vscode.DiagnosticSeverity.Error
             )
         );

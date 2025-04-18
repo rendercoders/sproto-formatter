@@ -1,0 +1,21 @@
+{
+  "scopeName": "source.sproto",
+  "patterns": [
+    {
+      "name": "comment.line.sproto",
+      "match": "#.*"
+    },
+    {
+      "name": "keyword.control.sproto",
+      "match": "\\b(request|response|struct|enum|service)\\b"
+    },
+    {
+      "name": "constant.numeric.sproto",
+      "match": "\\b\\d+\\b"
+    },
+    {
+      "name": "entity.name.type.sproto",
+      "match": "[A-Z][a-zA-Z0-9_]*"
+    }
+  ]
+}

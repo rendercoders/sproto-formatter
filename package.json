@@ -3,7 +3,7 @@
   "displayName": "Sproto Formatter",
   "description": "Formatter and validator for .sproto protocol files",
   "version": "1.0.0",
-  "publisher": "your-name",
+  "publisher": "causes",
   "engines": {
     "vscode": "^1.75.0"
   },
